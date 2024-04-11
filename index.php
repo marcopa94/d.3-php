@@ -1,4 +1,5 @@
 <?php
+//--------------------------------------------- comando che connette al database---------------------------//
 $host = "localhost";
 $db = "client";
 $user = "root";
@@ -9,7 +10,6 @@ $options = [
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     PDO::ATTR_EMULATE_PREPARES => false,
 ];
-// comando che connette al database
 $pdo = new PDO($dsn, $user, $pass, $options);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -19,21 +19,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    
     $errors = [];
 
-    // Validazione dei dati
-    if (empty($name)) {
+//----------------------------------------------------Validation------------------------------------------------------------//
+    if (($name)) {
         $errors['name'] = 'Nome non può essere vuoto';
     }
 
-    if (empty($surname)) {
+    if (($surname)) {
         $errors['surname'] = 'Cognome non può essere vuoto';
     }
 
-    if (empty($age) || !is_numeric($age)) {
-        $errors['age'] = 'Età deve essere un numero';
-    }
 
-    // chiamata al database
-    if (empty($errors)) {
+    //------------------------------------- chiamata al database insrimento-------------------------------------------------//
+    if (($errors)) {
         $stmt = $pdo->prepare("INSERT INTO client (name, surname, age) VALUES (:name, :surname, :age)");
         $stmt->execute([
             'name' => $name,
@@ -48,15 +45,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete'])) {
-    $user_id = $_POST['delete'];
 
-    $stmt = $pdo->prepare("DELETE FROM client WHERE id = ?");
-    $stmt->execute([$user_id]);
-    echo "Record eliminato con successo!";
-}
+
+/*-----------------------------------------------inizio modifiche--------------------------------------------------------------------*/ 
+/* 
+$stmt = $pdo->prepare("UPDATE dishes SET name = :name  WHERE user_id = :user_id");
+$stmt->execute([
+    $user_id => 16,
+    $name => 'Pizza editata',
+    $username => 'Pizza editata',
+    $age => 'Pizza editata',
+
+
+
+]); */
 ?>
-
+<!-- /*-----------------------------------------------fine delete--------------------------------------------------------------------*/ -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -109,9 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete'])) {
 </div>
 
 
-<div id="box">
 
-</div>
 
 <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

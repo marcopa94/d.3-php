@@ -1,4 +1,5 @@
 <?php
+// ------------------------------------comando che connette al database-----------------------------------------------//
 $host = "localhost";
 $db = "client";
 $user = "root";
@@ -9,14 +10,13 @@ $options = [
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     PDO::ATTR_EMULATE_PREPARES => false,
 ];
-// comando che connette al database
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (PDOException $e) {
     die("Errore di connessione al database: " . $e->getMessage());
 }
 
-// Verifica se il form è stato inviato e se user_id è stato impostato
+// ---------------------------------------Verifica se il form è stato inviato e se user_id è stato impostato------------------------------//
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['user_id'])) {
     $user_id = $_POST['user_id'];
 
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['user_id'])) {
         echo "Record eliminato con successo!";
     }
 }
-
+//---------------------------------visualizzazione------------------------------------------------------------------//
 $stmt = $pdo->query('SELECT * FROM client');
 
 echo '<ul>';
@@ -38,6 +38,7 @@ foreach ($stmt as $row) {
 }
 echo '</ul>';
 ?>
+//-----------------------------------------------------------------------------------------------------------------//
 <!DOCTYPE html>
 <html lang="en">
 <head>
