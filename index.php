@@ -20,15 +20,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $errors = [];
 
     // Validazione dei dati
-    if (($name)) {
+    if ((!$name)) {
         $errors['name'] = 'Nome non può essere vuoto';
     }
 
-    if (($surname)) {
+    if ((!$surname)) {
         $errors['surname'] = 'Cognome non può essere vuoto';
     }
 
-    if (($age) || !is_numeric($age)) {
+    if (!is_numeric($age)) {
         $errors['age'] = 'Età deve essere un numero';
     }
 // chiamat al database//
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'age' => $age,
         ]);
         echo "Dati inseriti con successo!";
-        header('Location: /localhost/w-1/d.3%20php//index2.php');
+        header('Location:/w-1/d.3%20php/index2.php');
     } else {
         echo '<pre>' . print_r($errors, true) . '</pre>';
     }
