@@ -20,19 +20,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $errors = [];
 
     // Validazione dei dati
-    if ((!$name)) {
+    if (empty($name)) {
         $errors['name'] = 'Nome non può essere vuoto';
     }
 
-    if ((!$surname)) {
+    if (empty($surname)) {
         $errors['surname'] = 'Cognome non può essere vuoto';
     }
 
-    if (!is_numeric($age)) {
+    if (empty($age) || !is_numeric($age)) {
         $errors['age'] = 'Età deve essere un numero';
     }
-// chiamat al database//
-    if (($errors==[])) {
+
+    // chiamata al database
+    if (empty($errors)) {
         $stmt = $pdo->prepare("INSERT INTO client (name, surname, age) VALUES (:name, :surname, :age)");
         $stmt->execute([
             'name' => $name,
@@ -40,10 +41,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             'age' => $age,
         ]);
         echo "Dati inseriti con successo!";
-        header('Location:/w-1/d.3%20php/index2.php');
+        header('Location: /w-1/d.3%20php/index2.php');
+        exit();
     } else {
         echo '<pre>' . print_r($errors, true) . '</pre>';
     }
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete'])) {
+    $user_id = $_POST['delete'];
+
+    $stmt = $pdo->prepare("DELETE FROM client WHERE id = ?");
+    $stmt->execute([$user_id]);
+    echo "Record eliminato con successo!";
 }
 ?>
 
@@ -97,6 +107,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
+
+
+<div id="box">
+
+</div>
+
 <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
