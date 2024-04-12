@@ -16,7 +16,7 @@ try {
     die("Errore di connessione al database: " . $e->getMessage());
 }
 
-// Check if ID is provided in the URL
+// -----------------------------------------prendi id dal url-------------------------------------------
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
     $stmt = $pdo->prepare("SELECT * FROM client WHERE user_id = ?");
@@ -30,7 +30,7 @@ if (isset($_GET['id'])) {
     die("ID non specificato.");
 }
 
-// Handle form submission
+// -----------------------------------------------------------------------------------------------
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['name'], $_POST['surname'], $_POST['age'], $_POST['user_id'])) {
     $name = $_POST['name'];
     $surname = $_POST['surname'];
