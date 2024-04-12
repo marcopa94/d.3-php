@@ -31,12 +31,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['user_id'])) {
 }
 
 //------------------------------------------Ricerca per nome---------------------------------------------------------//
+$results = [];
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['search'])) {
     $search = $_GET['search'];
 
     // Prepara la query di ricerca per il nome
-    $stmt = $pdo->prepare("SELECT * FROM client WHERE name or surname LIKE ?");
-    $stmt->execute(["%$search%"]);
+    $stmt = $pdo->prepare("SELECT * FROM client WHERE name LIKE ? OR surname LIKE ?");
+    $stmt->execute(["%$search%", "%$search%"]);
 
     $results = $stmt->fetchAll();
 }
@@ -45,6 +46,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['search'])) {
 $stmt = $pdo->query('SELECT * FROM client');
 
 $all_clients = $stmt->fetchAll();
+//---------------------------------------------- Query per i risultati paginati--------------------------------------------//
+$limit =2; 
+$page = isset($_GET['page']) ? $_GET['page'] : 1; 
+$offset = ($page - 1) * $limit; 
+
+
+$stmt = $pdo->prepare('SELECT * FROM client LIMIT :limit OFFSET :offset');
+$stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+$stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+$stmt->execute();
+
+$paginated_results = $stmt->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -109,11 +122,21 @@ $all_clients = $stmt->fetchAll();
                 </div>
             <?php endforeach; ?>
         </div>
+
+        <!----------------------------------------------------- Pulsanti di navigazione ----------------------------------------->
+        <div class="mt-3">
+            <?php if ($page > 1): ?>
+                <a href="?search=<?= $search ?>&page=<?= $page - 1 ?>" class="btn btn-primary">Previous</a>
+            <?php endif; ?>
+            <?php if (count($results) == $limit): ?>
+                <a href="?search=<?= $search ?>&page=<?= $page + 1 ?>" class="btn btn-primary">Next</a>
+            <?php endif; ?>
+        </div>
     <?php endif; ?>
 
     <h2 class="mt-5">Tutti i record nel database:</h2>
     <div class="row">
-        <?php foreach ($all_clients as $client): ?>
+        <?php foreach ($paginated_results as $client): ?>
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-body">
@@ -124,6 +147,16 @@ $all_clients = $stmt->fetchAll();
                 </div>
             </div>
         <?php endforeach; ?>
+    </div>
+
+    <!------------------------------------------------------- Pulsanti di navigazione --------------------------------------------->
+    <div class="mt-3">
+        <?php if ($page > 1): ?>
+            <a href="?page=<?= $page - 1 ?>" class="btn btn-primary">Previous</a>
+        <?php endif; ?>
+        <?php if (count($all_clients) > ($offset + $limit)): ?>
+            <a href="?page=<?= $page + 1 ?>" class="btn btn-primary">Next</a>
+        <?php endif; ?>
     </div>
 </div>
 
