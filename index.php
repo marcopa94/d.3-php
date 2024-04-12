@@ -77,23 +77,25 @@ $stmt->execute([
         #box {
             display: flex;
             justify-content: center;
-            margin-top: 100px;
-            border: 1px solid grey;
+            margin-top: 3dvb;
+        
             border-radius: 10px;
             padding: 10px;
         }
 
-        body {
-            background-color: bisque;
+        body {text-align: center;
+            background-color: aliceblue;
         }
 
         form {
-            background-color: bisque;
+            background-color: aliceblue;
         }
     </style>
 </head>
-<body>
+<body> <img src="./logo.png" alt="" style="width: 120px; margin-top:100px">
 <div id="box">
+   
+
     <form style="width: 500px" method="POST">
         <div class="mb-3">
             <label for="name" class="form-label">Name</label>
