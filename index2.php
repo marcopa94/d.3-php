@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['search'])) {
     $search = $_GET['search'];
 
     // Prepara la query di ricerca per il nome
-    $stmt = $pdo->prepare("SELECT * FROM client WHERE name LIKE ?");
+    $stmt = $pdo->prepare("SELECT * FROM client WHERE name or surname LIKE ?");
     $stmt->execute(["%$search%"]);
 
     $results = $stmt->fetchAll();
@@ -73,7 +73,7 @@ $all_clients = $stmt->fetchAll();
 <div class="container">
     <h1 class="mt-5 mb-4">Gestione Clienti</h1>
 
-    <!-- Form per eliminare un record -->
+    <!---------------------------------------------- Form per eliminare un record ------------------------------------------>
     <div id="box">
         <form style="width: 500px;" method="POST">
             <div class="mb-3">
@@ -84,7 +84,7 @@ $all_clients = $stmt->fetchAll();
         </form>
     </div>
 
-    <!-- Form per la ricerca -->
+    <!-------------------------------------------------- Form per la ricerca ----------------------------------------------------->
     <div id="box">
         <form style="width: 500px;" method="GET">
             <div class="mb-3">
@@ -95,7 +95,7 @@ $all_clients = $stmt->fetchAll();
         </form>
     </div>
 
-    <!-- Visualizzazione dei risultati della ricerca -->
+    <!---------------------------------------------- Visualizzazione dei risultati della ricerca -------------------------->
     <?php if (isset($results) && count($results) > 0): ?>
         <div class="row">
             <?php foreach ($results as $result): ?>
