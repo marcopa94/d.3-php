@@ -124,7 +124,7 @@ $paginated_results = $stmt->fetchAll();
                     <div class="card-body">
                         <h5 class="card-title"><?= $client['name'] , " " ,$client['surname'] ?></h5>
                         <p class="card-text">ID: <?= $client['user_id'] ?></p>
-                        <a href="./index.php" class="btn btn-primary">Edit</a>
+                        <a href="./index.php?id=<?=$client['user_id']?>" class="btn btn-primary">Edit</a>
                     </div>
                 </div>
             </div>
