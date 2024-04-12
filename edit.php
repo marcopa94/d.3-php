@@ -37,10 +37,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['name'], $_POST['surnam
     $age = $_POST['age'];
     $user_id = $_POST['user_id'];
 
+    // Aggiornamento nel database
     $stmt = $pdo->prepare("UPDATE client SET name = ?, surname = ?, age = ? WHERE user_id = ?");
     $stmt->execute([$name, $surname, $age, $user_id]);
 
-    header('Location: index.php');
+    // Verifica se ci sono errori durante l'aggiornamento
+    if ($stmt->errorInfo()[0] !== '00000') {
+        die("Errore durante l'aggiornamento: " . $stmt->errorInfo()[2]);
+    }
+
+    // Reindirizzamento a index2.php dopo l'aggiornamento
+    header('Location: index2.php');
     exit();
 }
 ?>

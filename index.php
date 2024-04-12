@@ -1,5 +1,4 @@
 <?php
-// ----------------------------------------------------Connessione al database----------------------------------------------------------
 $host = "localhost";
 $db = "client";
 $user = "root";
@@ -17,17 +16,13 @@ try {
     die("Errore di connessione al database: " . $e->getMessage());
 }
 
-// Verifica se il form è stato inviato
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Recupera i dati dal form
     $name = $_POST['name'];
     $surname = $_POST['surname'];
     $age = $_POST['age'];
-    $user_id = $_POST["user_id"]; // ID dell'utente da modificare
    
     $errors = [];
-// ---------------------------------------------------------Validazione dei campi-----------------------------------------------------
-    
+
     if (empty($name)) {
         $errors['name'] = 'Nome non può essere vuoto';
     }
@@ -35,29 +30,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($surname)) {
         $errors['surname'] = 'Cognome non può essere vuoto';
     }
-// -------------------------------------------------Se non ci sono errori, esegui l'aggiornamento-------------------------------------
-  
+
     if (empty($errors)) {
         try {
-            $stmt = $pdo->prepare("UPDATE client SET name = :name, surname = :surname, age = :age WHERE user_id = :id");
+            $stmt = $pdo->prepare("INSERT INTO client (name, surname, age) VALUES (:name, :surname, :age)");
             $stmt->execute([
                 'name' => $name,
                 'surname' => $surname,
                 'age' => $age,
-                'id' => $user_id,
             ]);
-            echo "Dati aggiornati con successo!";
+            echo "Dati inseriti con successo!";
             header('Location: /w-1/d.3%20php/index2.php');
             exit();
         } catch (PDOException $e) {
-            die("Errore durante l'aggiornamento dei dati: " . $e->getMessage());
+            die("Errore durante l'inserimento dei dati: " . $e->getMessage());
         }
     } else {
         echo '<pre>' . print_r($errors, true) . '</pre>';
     }
 }
 
-//----------------------------------------------- Recupera i dettagli dell'utente per prepopolare il form---------------------------------
 $id = $_GET['id'] ?? 0;
 $stmt = $pdo->prepare("SELECT * FROM client WHERE user_id = :id");
 $stmt->execute(['id' => $id]);
@@ -99,7 +91,6 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 <body>
 <div id="box">
     <form style="width: 500px" method="POST">
-        <input type="hidden" name="user_id" value="<?php echo $user['user_id'] ?? 0; ?>">
         <div class="mb-3">
             <label for="name" class="form-label">Nome</label>
             <input type="text" class="form-control" name="name" id="name" value="<?php echo $user['name'] ?? ''; ?>" />
@@ -113,7 +104,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
             <input type="text" class="form-control" name="age" id="age" value="<?php echo $user['age'] ?? ''; ?>" />
         </div>
 
-        <button type="submit" class="btn btn-primary">Aggiorna</button>
+        <button type="submit" class="btn btn-primary">Inserisci</button>
     </form>
 </div>
 

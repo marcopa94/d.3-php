@@ -9,13 +9,14 @@ $options = [
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     PDO::ATTR_EMULATE_PREPARES => false,
 ];
+
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (PDOException $e) {
     die("Errore di connessione al database: " . $e->getMessage());
 }
 
-//-------------------------------------------- Eliminazione record-----------------------------------------------------------------------
+// Eliminazione record
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['user_id'])) {
     $user_id = $_POST['user_id'];
 
@@ -25,10 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['user_id'])) {
         $stmt = $pdo->prepare("DELETE FROM client WHERE user_id = ?");
         $stmt->execute([$user_id]);
         echo "Record eliminato con successo!";
+        // Puoi anche aggiungere un reindirizzamento o un altro comportamento dopo l'eliminazione
     }
 }
 
-//-------------------------------------------------- Ricerca per nome------------------------------------------------------------------------
+// Ricerca per nome
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['search'])) {
     $search = $_GET['search'];
 
@@ -38,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['search'])) {
     $results = $stmt->fetchAll();
 }
 
-//---------------------------------- Visualizzazione di tutti i record paginati-----------------------------------------------------------
+// Visualizzazione di tutti i record paginati
 $limit = 2;
 $page = isset($_GET['page']) ? $_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
@@ -49,9 +51,8 @@ $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 
 $paginated_results = $stmt->fetchAll();
+?>
 
-
-//---------------------------------- Visualizzazione di tutti i record paginati-----------------------------------------------------------?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -76,9 +77,6 @@ $paginated_results = $stmt->fetchAll();
 <body>
 
 <div class="container">
-    
-    <!-------------------------------------------- Visualizzazione dei risultati della ricerca --------------------------------------->
-    <div class="container">
     <h1 class="mt-5 mb-4">Gestione Clienti</h1>
 
     <!----------------------------------------------------------------------- Form per eliminare un record --------------------------------->
@@ -124,7 +122,7 @@ $paginated_results = $stmt->fetchAll();
                     <div class="card-body">
                         <h5 class="card-title"><?= $client['name'] , " " ,$client['surname'] ?></h5>
                         <p class="card-text">ID: <?= $client['user_id'] ?></p>
-                        <a href="./index.php?id=<?=$client['user_id']?>" class="btn btn-primary">Edit</a>
+                        <a href="edit.php?id=<?= $client['user_id'] ?>" class="btn btn-primary">Edit</a>
                     </div>
                 </div>
             </div>
